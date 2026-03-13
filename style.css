@@ -1,0 +1,317 @@
+﻿
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --green: #00fe50;
+    --dark: #001e19;
+    --text: #ccc8be;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--dark);
+    cursor: none;
+}
+
+/* ── full-screen stage ── */
+.stage {
+    position: fixed;
+    inset: 0;
+    font-family: "Roboto Mono", monospace;
+}
+
+/* ══════════════════
+           LABELS
+        ══════════════════ */
+.label {
+    position: absolute;
+    font-size: clamp(8px, 1vw, 13px);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text);
+    line-height: 1.55;
+    z-index: 30;
+    transition: color 0.2s;
+    letter-spacing: 0.06em;
+}
+
+    .label:hover {
+        color: var(--green);
+    }
+
+.label-tl {
+    top: 5%;
+    left: 3%;
+}
+
+.label-tr {
+    top: 5%;
+    right: 3%;
+    text-align: right;
+}
+
+.label-bl {
+    bottom: 5%;
+    left: 3%;
+}
+
+.label-br {
+    bottom: 5%;
+    right: 3%;
+    text-align: right;
+}
+
+.label-tc {
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    font-size: clamp(10px, 1.4vw, 22px);
+    letter-spacing: 0.1em;
+}
+
+/* baseline drop-in animation */
+.line {
+    overflow: hidden;
+    display: block;
+}
+
+.line-inner {
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+    animation: lineUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes lineUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.label-tl .line:nth-child(1) .line-inner {
+    animation-delay: 0.10s;
+}
+
+.label-tl .line:nth-child(2) .line-inner {
+    animation-delay: 0.20s;
+}
+
+.label-tc .line:nth-child(1) .line-inner {
+    animation-delay: 0.20s;
+}
+
+.label-tc .line:nth-child(2) .line-inner {
+    animation-delay: 0.30s;
+}
+
+.label-tr .line:nth-child(1) .line-inner {
+    animation-delay: 0.10s;
+}
+
+.label-tr .line:nth-child(2) .line-inner {
+    animation-delay: 0.20s;
+}
+
+.label-bl .line:nth-child(1) .line-inner {
+    animation-delay: 0.38s;
+}
+
+.label-bl .line:nth-child(2) .line-inner {
+    animation-delay: 0.48s;
+}
+
+.label-br .line:nth-child(1) .line-inner {
+    animation-delay: 0.38s;
+}
+
+.label-br .line:nth-child(2) .line-inner {
+    animation-delay: 0.48s;
+}
+
+/* ══════════════════
+           HERO TEXT
+        ══════════════════ */
+.hero-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.hero-text {
+    font-family: "Satisfy", cursive;
+    font-style: italic;
+    font-size: clamp(48px, 28vw, 400px);
+    color: var(--green);
+    white-space: nowrap;
+    line-height: 1;
+    user-select: none;
+    animation: heroFade 1s cubic-bezier(0.16,1,0.3,1) 0.5s both;
+}
+
+@keyframes heroFade {
+    from {
+        opacity: 0;
+        transform: translateY(2vh);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ══════════════════
+           IMAGE ROWS
+        ══════════════════ */
+.img-rows {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 1.2vh, 20px);
+    pointer-events: none;
+}
+
+.img-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(3px, 0.5vw, 10px);
+    pointer-events: none;
+    width: 100%;
+    padding: 0 1vw;
+}
+
+/* ── flip cell ── */
+.flip-cell {
+    /* 10 per row, account for gaps: ~(100% - 9 gaps) / 10 */
+    width: clamp(40px, 10vw, 180px);
+    aspect-ratio: 3/4;
+    flex-shrink: 0;
+    position: relative;
+    pointer-events: all;
+    cursor: none;
+    perspective: 600px;
+    transform-style: preserve-3d;
+}
+
+/* flipping inner — rotateX = vertical flip */
+.flip-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .flip-inner.flipped {
+        transform: rotateX(180deg);
+    }
+
+    .flip-inner.flipping-back {
+        transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+.flip-front,
+.flip-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 3px;
+}
+
+.flip-front {
+    background: transparent;
+}
+
+.flip-back {
+    transform: rotateX(180deg);
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.6);
+}
+
+    .flip-back img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+/* ── custom cursor ── */
+.cursor {
+    position: fixed;
+    width: 9px;
+    height: 9px;
+    background: var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: exclusion;
+}
+
+/* ══════════════════
+           RESPONSIVE TWEAKS
+        ══════════════════ */
+
+/* tablet-ish */
+@media (max-width: 900px) {
+    .hero-text {
+        font-size: clamp(36px, 10vw, 100px);
+    }
+
+    .label {
+        font-size: clamp(7px, 1.2vw, 11px);
+    }
+
+    .label-tc {
+        font-size: clamp(9px, 1.6vw, 16px);
+    }
+
+    .flip-cell {
+        width: clamp(36px, 8vw, 90px);
+    }
+}
+
+/* mobile */
+@media (max-width: 600px) {
+    .hero-text {
+        font-size: clamp(28px, 9vw, 60px);
+    }
+
+    .label {
+        font-size: clamp(6px, 2vw, 10px);
+    }
+
+    .label-tc {
+        font-size: clamp(8px, 2.5vw, 13px);
+    }
+    /* 5 per row on mobile */
+    .img-row {
+        flex-wrap: wrap;
+    }
+
+    .flip-cell {
+        width: clamp(30px, 16vw, 70px);
+    }
+}
